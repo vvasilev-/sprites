@@ -27,7 +27,8 @@ Sprites.config = {
 		ruler: Units.PIXELS,
 		type: TypeUnits.PIXELS
 	},
-	displayDialogs: DialogModes.NO
+	displayDialogs: DialogModes.NO,
+	exportFileName: 'style.css'
 };
 
 /**
@@ -151,6 +152,7 @@ Sprites.browse = function(){
 
 	if (dialog) {
 		Sprites.UI.sourceTxt.text = dialog.fsName;
+		Sprites.folder = dialog;
 		Sprites.parseFolder(dialog);
 	} else {
 		Sprites.UI.sourceTxt.text = 'No selected folder.';
@@ -199,6 +201,8 @@ Sprites.generate = function(){
 		alert(Sprites.messages.IS_NAN);
 		return;
 	}
+
+	Sprites.positions = [];
 
 	// loop the files
 	for (var i = 0; i < files.length; i++) {
@@ -284,6 +288,7 @@ Sprites.generate = function(){
 
 			// paste the selection
 			spriteDoc.selection.select(bounds);
+			Sprites.positions.push(spriteDoc.selection.bounds);
 			spriteDoc.paste(true);
 
 			// close the file
@@ -293,8 +298,11 @@ Sprites.generate = function(){
 
 	}
 
+	// output the css
+	Sprites.outputCss();
+
 	// close plugin
-	Sprites.close();
+	//Sprites.close();
 
 };
 
@@ -306,6 +314,31 @@ Sprites.close = function(){
 
 	Sprites.restoreSettings();
 	Sprites.UI.close();
+
+};
+
+/**
+ * @method ouputCss
+ * @description Generates the CSS file.
+ */
+Sprites.outputCss = function(){
+
+	// variables
+	var style = new File(Sprites.folder.absoluteURI + '/' + Sprites.config.exportFileName);
+
+	// open the file
+	style.open('w');
+
+	for (var i = 0; i < Sprites.positions.length; i++) {
+
+		// variable
+		var pos = Sprites.positions[i];
+
+	}
+
+
+	// save the file
+	style.close();
 
 };
 
