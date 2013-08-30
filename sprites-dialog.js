@@ -5,13 +5,6 @@
  */
 
 /**
- * Define plugin namespace.
- */
-if (!Sprites) {
-	var Sprites = {};
-}
-
-/**
  * Define nested namespace.
  */
 Sprites.Dialog = {};
@@ -39,7 +32,7 @@ Sprites.Dialog.run = function(){
 Sprites.Dialog.setupMasterWindow = function(){
 
 	// window variable
-	var win = new Window('dialog', 'Sprites');
+	var win = Sprites.Dialog.masterWindow = new Window('dialog', 'Sprites');
 
 	// setup the window
 	win.alignChildren = 'left';
@@ -69,7 +62,8 @@ Sprites.Dialog.setupMasterWindow = function(){
 	win.browsePnl.text = 'Select a folder.';
 	win.browsePnl.alignChildren = 'left';
 
-	// add browse button
+	// add browse elements
+	win.browsePnl.add('statictext', undefined, 'No selected folder.', { name: 'browseText' });
 	win.browsePnl.add('button', undefined, 'Choose...', { name: 'browse' });
 
 	// attach event handler
@@ -85,5 +79,8 @@ Sprites.Dialog.setupMasterWindow = function(){
 
 	// show the window
 	win.show();
+
+	// save window reference
+	Sprites.Dialog.masterWindow = win;
 
 };
