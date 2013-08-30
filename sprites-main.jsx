@@ -7,9 +7,10 @@
 /**
  * Include all dependencies.
  */
+#include 'sprites-dialog.js'
 #include 'sprites-browser.js'
 
 /**
- * Run the file browser.
+ * Run the plugin dialog.
  */
-Sprites.Browser.run();
+Sprites.Dialog.run();

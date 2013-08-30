@@ -22,21 +22,10 @@ Sprites.Browser = {};
 Sprites.Browser.selectedFiles = [];
 
 /**
- * @method run
- * @description Initialize the module.
- */
-Sprites.Browser.run = function(){
-
-	// show the browse dialog
-	Sprites.Browser.showDialog();
-
-};
-
-/**
- * @method showDialog
+ * @method showBrowse
  * @description Lauch the file browsing window.
  */
-Sprites.Browser.showDialog = function(){
+Sprites.Browser.showBrowse = function(){
 
 	// browse dialog
 	var dialog = Folder.selectDialog('Select files for the sprite.');
