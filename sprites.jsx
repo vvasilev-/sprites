@@ -293,6 +293,9 @@ Sprites.generate = function(){
 
 	}
 
+	// close plugin
+	Sprites.close();
+
 };
 
 /**
