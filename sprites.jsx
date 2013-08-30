@@ -36,7 +36,7 @@ Sprites.config = {
 Sprites.messages = {
 	NO_INPUT: 'There is no selected folder with files.',
 	BAD_DOC: 'The file is corrupt.',
-	IS_NAN: 'The string is not a number.'
+	IS_NAN: 'The margin is not a number.'
 };
 
 /**
@@ -187,8 +187,18 @@ Sprites.generate = function(){
 	// variables
 	var spriteDoc = null,
 		layout = Sprites.UI.layoutX.value ? 'horizontal' : 'vertical',
-		margin = parseInt(Sprites.UI.marginTxt.text, 10),
+		margin = Math.abs(parseInt(Sprites.UI.marginTxt.text, 10)),
 		files = Sprites.selectedFiles;
+
+	if (!files) {
+		alert(Sprites.messages.NO_INPUT);
+		return;
+	}
+
+	if (isNaN(margin)) {
+		alert(Sprites.messages.IS_NAN);
+		return;
+	}
 
 	// loop the files
 	for (var i = 0; i < files.length; i++) {
