@@ -119,6 +119,7 @@ Sprites.setupUI = function(){
 	Sprites.UI.sourceGrp = Sprites.UI.sourcePnl.add('group');
 	Sprites.UI.sourceGrp.orientation = 'row';
 	Sprites.UI.sourceGrp.margins = 5;
+	Sprites.UI.sourceGrp.alignment = 'left';
 
 	Sprites.UI.sourceTxt = Sprites.UI.sourceGrp.add('edittext', undefined, 'No selected folder.');
 	Sprites.UI.sourceTxt.preferredSize = [300, 25];
