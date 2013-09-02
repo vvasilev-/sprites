@@ -10,7 +10,7 @@
 var Sprites = {};
 
 /**
- * Define plugin defaults.
+ * Define app defaults.
  */
 Sprites.defaults = {};
 
@@ -37,6 +37,7 @@ Sprites.config = {
  */
 Sprites.messages = {
 	NO_INPUT: 'There is no selected folder with files.',
+	NO_TPL: 'The template cannot be empty.',
 	BAD_DOC: 'The file is corrupt.',
 	IS_NAN: 'The margin is not a number.'
 };
@@ -126,6 +127,18 @@ Sprites.setupUI = function(){
 
 	Sprites.UI.layoutX.value = true;
 
+	// add export
+	Sprites.UI.exportPnl = Sprites.UI.add('panel', undefined, 'Export template.');
+
+	Sprites.UI.exportGrp = Sprites.UI.exportPnl.add('group');
+	Sprites.UI.exportGrp.orientation = 'column';
+	Sprites.UI.exportGrp.margins = 5;
+	Sprites.UI.exportGrp.alignment = 'left';
+	Sprites.UI.exportGrp.alignChildren = 'left';
+
+	Sprites.UI.exportHelp = Sprites.UI.exportGrp.add('statictext', undefined, 'Available template tags: {{filename}}, {{width}}, {{height}}, {{x}}, {{y}}');
+	Sprites.UI.exportTxt = Sprites.UI.exportGrp.add('edittext', undefined, Sprites.config.exportTpl);
+
 	// add buttons
 	Sprites.UI.buttonsGrp = Sprites.UI.add('group');
 	Sprites.UI.buttonsGrp.orientation = 'row';
@@ -163,7 +176,7 @@ Sprites.browse = function(){
 
 /**
  * @method parseFolder
- * @param {Object} dialog 
+ * @param {Object} dialog
  * @description Process all valid files from selected folder.
  */
 Sprites.parseFolder = function(dialog){
@@ -200,6 +213,12 @@ Sprites.generate = function(){
 
 	if (isNaN(margin)) {
 		alert(Sprites.messages.IS_NAN);
+		return;
+	}
+
+	if (Sprites.UI.exportTxt.text == '') {
+		alert(Sprites.messages.NO_TPL);
+		Sprites.UI.exportTxt.text = Sprites.config.exportTpl;
 		return;
 	}
 
@@ -298,7 +317,7 @@ Sprites.generate = function(){
 
 			if (layout == 'vertical') {
 				x = (parseInt(spriteDoc.width, 10) - docWidth)/2;
-			} 
+			}
 
 			x = x == 0 ? x : -x;
 			y = y == 0 ? y : -y;
@@ -354,7 +373,7 @@ Sprites.outputCss = function(){
 	for (var i = 0; i < Sprites.processFiles.length; i++) {
 
 		// variable
-		var tpl = Sprites.config.exportTpl;
+		var tpl = Sprites.UI.exportTxt.text;
 
 		for (var j in Sprites.processFiles[i]) {
 
@@ -375,7 +394,6 @@ Sprites.outputCss = function(){
 	style.close();
 
 };
-
 
 /**
  * Start the plugin.
