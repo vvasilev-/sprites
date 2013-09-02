@@ -1,7 +1,7 @@
 /**
  * @package Sprites
  * @version 1.0.0
- * @description Simple sprite generator.
+ * @description Simple CSS sprite generator for Photoshop.
  */
 
 /**
