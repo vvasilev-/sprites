@@ -28,7 +28,8 @@ Sprites.config = {
 		type: TypeUnits.PIXELS
 	},
 	displayDialogs: DialogModes.NO,
-	exportFileName: 'style.css'
+	exportFileName: 'style.css',
+	exportTpl: '.icon-{{filename}} { width: {{width}}px; height: {{height}}px; background-position: {{x}}px {{y}}px; }'
 };
 
 /**
@@ -131,13 +132,13 @@ Sprites.setupUI = function(){
 	Sprites.UI.buttonsGrp.alignment = 'right';
 
 	Sprites.UI.generateBtn = Sprites.UI.buttonsGrp.add('button', undefined, 'Generate');
-	Sprites.UI.cancelBtn = Sprites.UI.buttonsGrp.add('button', undefined, 'Cancel');
+	Sprites.UI.closeBtn = Sprites.UI.buttonsGrp.add('button', undefined, 'Close');
 
 	Sprites.UI.generateBtn.preferredSize = [100, 25];
-	Sprites.UI.cancelBtn.preferredSize = [100, 25];
+	Sprites.UI.closeBtn.preferredSize = [100, 25];
 
 	Sprites.UI.generateBtn.addEventListener('click', Sprites.generate);
-	Sprites.UI.cancelBtn.addEventListener('click', Sprites.close);
+	Sprites.UI.closeBtn.addEventListener('click', Sprites.close);
 
 };
 
@@ -202,7 +203,7 @@ Sprites.generate = function(){
 		return;
 	}
 
-	Sprites.positions = [];
+	Sprites.processFiles = [];
 
 	// loop the files
 	for (var i = 0; i < files.length; i++) {
@@ -230,6 +231,9 @@ Sprites.generate = function(){
 			doc.selection.selectAll();
 			doc.selection.copy();
 
+			var docHeight = parseInt(doc.height, 10),
+				docWidth  = parseInt(doc.width, 10);
+
 			// resize the canvas
 			if (spriteDoc) {
 
@@ -255,8 +259,8 @@ Sprites.generate = function(){
 
 			} else {
 				spriteDoc = documents.add(
-					parseInt(doc.width, 10),
-					parseInt(doc.height, 10),
+					docWidth,
+					docHeight,
 					Sprites.config.resolution,
 					Sprites.config.name,
 					Sprites.config.mode,
@@ -288,7 +292,25 @@ Sprites.generate = function(){
 
 			// paste the selection
 			spriteDoc.selection.select(bounds);
-			Sprites.positions.push(spriteDoc.selection.bounds);
+
+			var x = parseInt(bounds[0][0], 10),
+				y = parseInt(bounds[0][1], 10);
+
+			if (layout == 'vertical') {
+				x = (parseInt(spriteDoc.width, 10) - docWidth)/2;
+			} 
+
+			x = x == 0 ? x : -x;
+			y = y == 0 ? y : -y;
+
+			Sprites.processFiles.push({
+				filename: file.name.split('.')[0],
+				width: docWidth,
+				height: parseInt(doc.height, 10),
+				x: x,
+				y: y
+			});
+
 			spriteDoc.paste(true);
 
 			// close the file
@@ -302,7 +324,7 @@ Sprites.generate = function(){
 	Sprites.outputCss();
 
 	// close plugin
-	//Sprites.close();
+	Sprites.close();
 
 };
 
@@ -329,13 +351,25 @@ Sprites.outputCss = function(){
 	// open the file
 	style.open('w');
 
-	for (var i = 0; i < Sprites.positions.length; i++) {
+	for (var i = 0; i < Sprites.processFiles.length; i++) {
 
 		// variable
-		var pos = Sprites.positions[i];
+		var tpl = Sprites.config.exportTpl;
+
+		for (var j in Sprites.processFiles[i]) {
+
+			var regEx = new RegExp('\{\{' + j + '\}\}'),
+				matches = tpl.match(regEx);
+
+			if (matches) {
+				tpl = tpl.replace(matches[0], Sprites.processFiles[i][j]);
+			}
+
+		}
+
+		style.writeln(tpl);
 
 	}
-
 
 	// save the file
 	style.close();
